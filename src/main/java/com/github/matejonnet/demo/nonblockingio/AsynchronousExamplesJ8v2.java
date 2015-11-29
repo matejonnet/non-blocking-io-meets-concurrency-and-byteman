@@ -76,16 +76,6 @@ public class AsynchronousExamplesJ8v2 {
         );
     }
 
-    private class OnReadAttachment {
-        final ByteBuffer byteBuffer;
-        final AsynchronousSocketChannel clientChannel;
-
-        public OnReadAttachment(ByteBuffer readBuffer, AsynchronousSocketChannel clientChannel) {
-            byteBuffer = readBuffer;
-            this.clientChannel = clientChannel;
-        }
-    }
-
     private static <V, A> CompletionHandler<V, A> handlerFrom(
             BiConsumer<V, A> completed,
             BiConsumer<Throwable, A> failed) {

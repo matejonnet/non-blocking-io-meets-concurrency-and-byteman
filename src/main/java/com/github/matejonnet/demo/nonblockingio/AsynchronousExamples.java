@@ -80,16 +80,6 @@ public class AsynchronousExamples {
         resumeReads(clientChannel);
     }
 
-    class OnReadAttachment {
-        final ByteBuffer byteBuffer;
-        final AsynchronousSocketChannel clientChannel;
-
-        public OnReadAttachment(ByteBuffer readBuffer, AsynchronousSocketChannel clientChannel) {
-            byteBuffer = readBuffer;
-            this.clientChannel = clientChannel;
-        }
-    }
-
     public static void main(String[] args) throws InterruptedException, ExecutionException, IOException {
         new AsynchronousExamples().asynchronousServerSocketChannelExample();
 

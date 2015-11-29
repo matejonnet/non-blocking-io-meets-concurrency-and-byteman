@@ -11,58 +11,62 @@ Matej Lazar [matejonnet@gmail.com](matejonnet@gmail.com)
 
 ???
 
-Visit [http://matejonnet.github.io/non-blocking-io-meets-concurrency-and-byteman/] (http://matejonnet.github.io/non-blocking-io-meets-concurrency-and-byteman/) to see slides in presentation mode.
+Visit [http://matejonnet.github.io/non-blocking-io-meets-concurrency-and-byteman/](http://matejonnet.github.io/non-blocking-io-meets-concurrency-and-byteman/) to see slides in presentation mode.
 
 ---
 
 Agenda
 ======
 
-### - Async and non-blocking IO
-- why non-blocking
-    - 50k requests per second
-    - threads are considered resource-intensive
-
-### - Java 8 - Lambda expressions / Streams / CompletableFuture
- - more detailed in [Get rid of boilerplate code with Java 8](http://github.com/matejonnet/get-rid-of-boilerplate-with-j8/)
-
-### - Reactive programming
-- example from get rid of boilerplate
+### - Why non-blocking IO
+- many long lived concurrent connections
+    - web sockets
+- 50k requests per second
+- threads are considered resource-intensive
 
 ### - Non-blocking IO principles
-- Channel vs Steam
-    - Javadoc
-. NIO.2
 
-### - Non-blocking IO example
-- reading / writing file
-
-### - How to handle 10k requests with a single thread
-- NIO (java 1.4)
+- channels and buffers instead of stream (NIO)
+    - do not block a thread waiting on IO
+    - get notified by when data is available
     - buffer-oriented model
-    - deals with data large blocks
-    - OS-level facilities to maximize throughput
-    - channels and buffers
-        - all data is read and written via buffers
-        - buffers can represent system-level buffers
-        - InputStream -> byte -> OutputStream
-        - Channel -> buffer -> Channel
+        - deal with data in large blocks
+    - InputStream -> byte -> OutputStream _(Img 1)_
+    - Channel -> buffer -> Channel _(Img 1)_
+    - See Javadoc _(ChannelExamples#fileChannel)_
 
+- buffers can represent system-level buffers _(Img 2)_
+    - allocateDirect or MappedByteBuffer _(ChannelExamples#fileChannel)_
+        - OS-level facilities to maximize throughput
+    - fileChannel.transferTo _(ChannelExamples#channelTransferTo)_
+- SeekableByteChannel
+    - _(ChannelExamples#byteChannel)_
+
+
+
+### - How to handle everything with a single thread
 - selectors
     - to deal with a large number of data sources simultaneously
-    - tells you When I/O activity happens on any of the streams
+    - notifies when any I/O activity happens
     - "event loop"
 
-- selectors example
-      // Create a new Selector for selecting
-      Selector selector = Selector.open();
-
-
-- context switching
 - IO threads and worker threads
 
+- see the example _(Server)_
+
 ### - NIO2 Files and Paths
-https://docs.oracle.com/javase/tutorial/essential/io/file.html
+- https://docs.oracle.com/javase/tutorial/essential/io/file.html
+- Path and File
+- AsynchronousSocketChannel & AsynchronousServerSocketChannel
+- see the example _(AsynchronousExamples)_
+
+### - Higher level implementations
+- Undertow http://undertow.io/ _(UndertowExample)_
+    - lightweight Webserver
+    - small dependency tree
+- Netty http://netty.io/
+    - easy to implement your own protocol
+- Async Http Client
 
 
 ### - Why being limited to a single thread while you can use few of them
@@ -74,11 +78,13 @@ Links
 
 ### References
 
-[http://github.com/matejonnet/get-rid-of-boilerplate-with-j8/] (http://github.com/matejonnet/get-rid-of-boilerplate-with-j8/)
+[http://github.com/matejonnet/get-rid-of-boilerplate-with-j8/](http://github.com/matejonnet/get-rid-of-boilerplate-with-j8/)
 http://www.javaworld.com/article/2073344/core-java/use-select-for-high-speed-networking.html
 http://tutorials.jenkov.com/java-nio/nio-vs-io.html
 http://stackoverflow.com/questions/8086930/non-blocking-socket-writes-in-java-versus-blocking-socket-writes
-
+http://www.programmingopiethehokie.com/2014/03/asynchronous-non-blocking-io-java-echo.html
+http://examples.javacodegeeks.com/core-java/nio/channels/asynchronoussocketchannel/java-nio-channels-asynchronoussocketchannel-example/
+http://openjdk.java.net/projects/nio/presentations/TS-4222.pdf
 
 ### Presentation tool used
 https://github.com/gnab/remark/

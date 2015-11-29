@@ -7,20 +7,23 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.nio.ByteBuffer;
 import java.nio.MappedByteBuffer;
+import java.nio.channels.AsynchronousFileChannel;
 import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
 import java.nio.channels.SeekableByteChannel;
 import java.nio.channels.WritableByteChannel;
 import java.nio.file.Files;
+import java.nio.file.OpenOption;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 
 /**
  * https://docs.oracle.com/javase/tutorial/essential/io/file.html
  *
  * @author <a href="mailto:matejonnet@gmail.com">Matej Lazar</a>
  */
-public class FilesExamples {
+public class ChannelExamples {
 
     public void fileChannel() {
         ByteBuffer buffer = ByteBuffer.allocate(1024);
@@ -36,12 +39,35 @@ public class FilesExamples {
             //inputStream.read(byteArray);
 
             FileChannel fileChannel = inputStream.getChannel();
-            fileChannel.read(buffer);
+            //loop required and call-back recommended
+            fileChannel.read(buffer); //TODO wrong ... it might not be able to fully read
 
+            readFully(fileChannel, buffer);
+
+            //get OS level buffer
             MappedByteBuffer mappedByteBuffer = fileChannel.map(FileChannel.MapMode.READ_ONLY, 0, fileChannel.size());
 
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+
+    private void asyncFileChanel() throws IOException {
+        Path file = Paths.get("");
+        AsynchronousFileChannel afc = AsynchronousFileChannel.open(file, StandardOpenOption.READ);
+        afc.write(ByteBuffer.wrap("My String".getBytes()), 0L);
+    }
+
+    private void readFully(FileChannel fileChannel, ByteBuffer byteBuffer) throws IOException {
+        while (true) {
+            int read = fileChannel.read(byteBuffer);
+            if (read == -1) {
+                return;
+            } else if (read == 0) {
+                //TODO multiplex
+                //no Thread.sleep(5);
+            }
         }
     }
 
