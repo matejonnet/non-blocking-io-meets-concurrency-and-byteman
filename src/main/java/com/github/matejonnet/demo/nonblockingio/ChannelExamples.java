@@ -52,13 +52,6 @@ public class ChannelExamples {
         }
     }
 
-
-    private void asyncFileChanel() throws IOException {
-        Path file = Paths.get("");
-        AsynchronousFileChannel afc = AsynchronousFileChannel.open(file, StandardOpenOption.READ);
-        afc.write(ByteBuffer.wrap("My String".getBytes()), 0L);
-    }
-
     private void readFully(FileChannel fileChannel, ByteBuffer byteBuffer) throws IOException {
         while (true) {
             int read = fileChannel.read(byteBuffer);
@@ -68,18 +61,6 @@ public class ChannelExamples {
                 //TODO multiplex
                 //no Thread.sleep(5);
             }
-        }
-    }
-
-    public void byteChannel() {
-        ByteBuffer buffer = ByteBuffer.allocate(1024);
-
-        Path file = Paths.get("pathToFile");
-
-        try (SeekableByteChannel seekableByteChannel = Files.newByteChannel(file)) {
-            seekableByteChannel.read(buffer);
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 

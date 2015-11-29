@@ -3,9 +3,13 @@ package com.github.matejonnet.demo.nonblockingio;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
+import java.nio.channels.AsynchronousFileChannel;
 import java.nio.channels.AsynchronousServerSocketChannel;
 import java.nio.channels.AsynchronousSocketChannel;
 import java.nio.channels.CompletionHandler;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Semaphore;
 
@@ -78,6 +82,12 @@ public class AsynchronousExamples {
     private void sendMessage(AsynchronousSocketChannel clientChannel, ByteBuffer buffer) {
         clientChannel.write(buffer);
         resumeReads(clientChannel);
+    }
+
+    private void asyncFileChanel(Path file) throws IOException {
+        AsynchronousFileChannel afc = AsynchronousFileChannel.open(file, StandardOpenOption.READ);
+        ByteBuffer buffer = ByteBuffer.wrap("My String".getBytes());
+        afc.write(buffer, 0L);
     }
 
     public static void main(String[] args) throws InterruptedException, ExecutionException, IOException {

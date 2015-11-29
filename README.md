@@ -39,9 +39,6 @@ Agenda
     - allocateDirect or MappedByteBuffer _(ChannelExamples#fileChannel)_
         - OS-level facilities to maximize throughput
     - fileChannel.transferTo _(ChannelExamples#channelTransferTo)_
-- SeekableByteChannel
-    - _(ChannelExamples#byteChannel)_
-
 
 
 ### - How to handle everything with a single thread
@@ -54,11 +51,14 @@ Agenda
 
 - see the example _(Server)_
 
-### - NIO2 Files and Paths
+### - NIO2 Way
 - https://docs.oracle.com/javase/tutorial/essential/io/file.html
 - Path and File
 - AsynchronousSocketChannel & AsynchronousServerSocketChannel
-- see the example _(AsynchronousExamples)_
+- AsynchronousFileChannel
+- ThreadPool & ExecutorService
+    - control in which thread is executed CompletionHandler callback
+- see the example _(AsynchronousExamples & AsynchronousExamplesJ8)_
 
 ### - Higher level implementations
 - Undertow http://undertow.io/ _(UndertowExample)_
@@ -85,6 +85,7 @@ http://stackoverflow.com/questions/8086930/non-blocking-socket-writes-in-java-ve
 http://www.programmingopiethehokie.com/2014/03/asynchronous-non-blocking-io-java-echo.html
 http://examples.javacodegeeks.com/core-java/nio/channels/asynchronoussocketchannel/java-nio-channels-asynchronoussocketchannel-example/
 http://openjdk.java.net/projects/nio/presentations/TS-4222.pdf
+http://docs.oracle.com/javase/7/docs/technotes/guides/io/
 
 ### Presentation tool used
 https://github.com/gnab/remark/
