@@ -1,6 +1,5 @@
-
-Async and high performance IO
-=============================
+Non blocking OI meets concurrency and Byteman
+=============================================
 <br />
 <br />
 <br />
@@ -12,7 +11,7 @@ Matej Lazar [matejonnet@gmail.com](matejonnet@gmail.com)
 
 ???
 
-Visit [http://matejonnet.github.io/async-and-non-blocking-io/] (http://matejonnet.github.io/async-and-non-blocking-io/) to see slides in presentation mode.
+Visit [http://matejonnet.github.io/non-blocking-io-meets-concurrency-and-byteman/] (http://matejonnet.github.io/non-blocking-io-meets-concurrency-and-byteman/) to see slides in presentation mode.
 
 ---
 
@@ -22,10 +21,7 @@ Agenda
 ### - Async and non-blocking IO
 - why non-blocking
     - 50k requests per second
-- threads, selectors, context switching
     - threads are considered resource-intensive
-        - memory consumption
-    - context switching price
 
 ### - Java 8 - Lambda expressions / Streams / CompletableFuture
  - more detailed in [Get rid of boilerplate code with Java 8](http://github.com/matejonnet/get-rid-of-boilerplate-with-j8/)
@@ -64,7 +60,10 @@ Agenda
 
 - context switching
 - IO threads and worker threads
--
+
+### - NIO2 Files and Paths
+https://docs.oracle.com/javase/tutorial/essential/io/file.html
+
 
 ### - Why being limited to a single thread while you can use few of them
 

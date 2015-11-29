@@ -2,8 +2,8 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
-  <groupId>com.github.matejonnet.util</groupId>
-  <artifactId>dump-env-variables</artifactId>
+  <groupId>com.github.matejonnet.demo</groupId>
+  <artifactId>nonblockingio</artifactId>
   <version>1.0</version>
   <packaging>jar</packaging>
 
@@ -21,21 +21,6 @@
           <configuration>
             <source>1.8</source>
             <target>1.8</target>
-          </configuration>
-        </plugin>
-
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-jar-plugin</artifactId>
-          <version>2.6</version>
-          <configuration>
-            <archive>
-              <manifest>
-                <addClasspath>true</addClasspath>
-                <mainClass>com.github.matejonnet.util.dumpenvvariables.DumpEnv</mainClass>
-                <classpathPrefix>dependency-jars/</classpathPrefix>
-              </manifest>
-            </archive>
           </configuration>
         </plugin>
       </plugins>
