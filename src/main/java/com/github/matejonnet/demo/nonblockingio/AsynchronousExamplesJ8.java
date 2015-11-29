@@ -9,46 +9,13 @@ import java.nio.channels.CompletionHandler;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Semaphore;
 import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
 
 /**
  * @author <a href="mailto:matejonnet@gmail.com">Matej Lazar</a>
  */
 public class AsynchronousExamplesJ8 {
 
-    BiConsumer<AsynchronousSocketChannel, AsynchronousServerSocketChannel> onConnect = (clientChannel, serverSocket) -> {
-        System.out.println("New connection opened.");
-        resumeReads(clientChannel);
-        resumeAccept(serverSocket); // get ready for next connection
-    };
-
-    BiConsumer<Integer, OnReadAttachment> onMessage = (written, attachment) -> {
-        ByteBuffer receivedBuffer = attachment.byteBuffer;
-        receivedBuffer.flip();
-        System.out.println("New message received.");
-        attachment.clientChannel.write(receivedBuffer);
-        resumeReads(attachment.clientChannel);
-    };
-
-    BiConsumer<Throwable, AsynchronousServerSocketChannel> onConnectionError = (e, serverSocket) -> {
-        e.printStackTrace();
-        try {
-            serverSocket.close();
-        } catch (IOException e1) {
-            e1.printStackTrace();
-        }
-    };
-
-    BiConsumer<Throwable, OnReadAttachment> onMessageError = (e, attachment) -> {
-        e.printStackTrace();
-        try {
-            attachment.clientChannel.close();
-        } catch (IOException e1) {
-            e1.printStackTrace();
-        }
-    };
-
-    void asynchronousServerSocketChannelExample() throws IOException, ExecutionException, InterruptedException {
+    public void asynchronousExample() throws IOException, ExecutionException, InterruptedException {
 
         //Open Channel
         AsynchronousServerSocketChannel listener = AsynchronousServerSocketChannel.open();
@@ -60,24 +27,51 @@ public class AsynchronousExamplesJ8 {
         resumeAccept(listener);
     }
 
-    private void resumeAccept(AsynchronousServerSocketChannel listener) {
-        listener.accept(listener, handlerFrom(onConnect, onConnectionError));
+    void onConnect(AsynchronousSocketChannel clientChannel, AsynchronousServerSocketChannel serverSocket) {
+        System.out.println("New connection opened.");
+        resumeReads(clientChannel);
+        resumeAccept(serverSocket); // get ready for next connection
+    }
+
+    void onMessage (Integer written, OnReadAttachment attachment) {
+        ByteBuffer receivedBuffer = attachment.byteBuffer;
+        receivedBuffer.flip();
+        System.out.println("New message received.");
+        attachment.clientChannel.write(receivedBuffer);
+        resumeReads(attachment.clientChannel);
+    }
+
+    void onConnectionError(Throwable e, AsynchronousServerSocketChannel serverSocket) {
+        e.printStackTrace();
+        try {
+            serverSocket.close();
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        }
+    };
+
+    void onMessageError(Throwable e, OnReadAttachment attachment) {
+        e.printStackTrace();
+        try {
+            attachment.clientChannel.close();
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        }
+    };
+
+    private void resumeAccept(AsynchronousServerSocketChannel serverSocket) {
+        serverSocket.accept(serverSocket, handlerFrom(
+                (clientChannel, ss) -> onConnect(clientChannel, serverSocket),
+                (e, ss) -> onConnectionError(e, serverSocket)));
     }
 
     private void resumeReads(AsynchronousSocketChannel clientChannel) {
         ByteBuffer readBuffer = ByteBuffer.allocate(1024);
         OnReadAttachment onReadAttachment = new OnReadAttachment(readBuffer, clientChannel);
-        clientChannel.read(readBuffer, onReadAttachment, handlerFrom(onMessage, onMessageError));
-    }
-
-    private class OnReadAttachment {
-        final ByteBuffer byteBuffer;
-        final AsynchronousSocketChannel clientChannel;
-
-        public OnReadAttachment(ByteBuffer readBuffer, AsynchronousSocketChannel clientChannel) {
-            byteBuffer = readBuffer;
-            this.clientChannel = clientChannel;
-        }
+        clientChannel.read(readBuffer, onReadAttachment, handlerFrom(
+                (written, attachment) -> onMessage(written, attachment),
+                (e, attachment) -> onMessageError(e, attachment))
+        );
     }
 
     private static <V, A> CompletionHandler<V, A> handlerFrom(
@@ -98,7 +92,7 @@ public class AsynchronousExamplesJ8 {
     }
 
     public static void main(String[] args) throws InterruptedException, ExecutionException, IOException {
-        new AsynchronousExamplesJ8().asynchronousServerSocketChannelExample();
+        new AsynchronousExamplesJ8().asynchronousExample();
 
         Semaphore mutex = new Semaphore(1);
         mutex.acquire();
