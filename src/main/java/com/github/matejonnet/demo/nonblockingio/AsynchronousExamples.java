@@ -80,7 +80,7 @@ public class AsynchronousExamples {
     }
 
     private void sendMessage(AsynchronousSocketChannel clientChannel, ByteBuffer buffer) {
-        clientChannel.write(buffer);
+        clientChannel.write(buffer);//TODO missing complete handler
         resumeReads(clientChannel);
     }
 

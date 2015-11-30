@@ -37,7 +37,7 @@ public class AsynchronousExamplesJ8 {
         ByteBuffer receivedBuffer = attachment.byteBuffer;
         receivedBuffer.flip();
         System.out.println("New message received.");
-        attachment.clientChannel.write(receivedBuffer);
+        attachment.clientChannel.write(receivedBuffer); //TODO missing complete handler
         resumeReads(attachment.clientChannel);
     }
 
