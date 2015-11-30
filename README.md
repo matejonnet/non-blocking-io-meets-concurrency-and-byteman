@@ -1,5 +1,5 @@
-Non blocking OI meets concurrency and Byteman
-=============================================
+Non blocking OI with Java
+=========================
 <br />
 <br />
 <br />
@@ -19,29 +19,54 @@ Agenda
 ======
 
 ### - Why non-blocking IO
+
+### - Non-blocking IO principles
+
+### - How to handle everything with a single thread
+
+### - NIO2 Way
+
+### - Higher level implementations
+
+### - Multi-threading and Concurrency meets Byteman
+
+---
+
+Why non-blocking IO
+===================
 - many long lived concurrent connections
     - web sockets
 - 50k requests per second
 - threads are considered resource-intensive
 
-### - Non-blocking IO principles
+---
 
+Non-blocking IO principles
+==========================
 - channels and buffers instead of stream (NIO)
     - do not block a thread waiting on IO
-    - get notified by when data is available
+    - get notified when data is available
     - buffer-oriented model
         - deal with data in large blocks
-    - InputStream -> byte -> OutputStream _(Img 1)_
-    - Channel -> buffer -> Channel _(Img 1)_
     - See Javadoc _(ChannelExamples#fileChannel)_
 
-- buffers can represent system-level buffers _(Img 2)_
+![Stream vs Channel](./images/img1.gif)
+
+---
+
+Non-blocking IO principles #2
+=============================
+- OS-level facilities to maximize throughput
     - allocateDirect or MappedByteBuffer _(ChannelExamples#fileChannel)_
-        - OS-level facilities to maximize throughput
     - fileChannel.transferTo _(ChannelExamples#channelTransferTo)_
 
+![System level buffers](./images/img2.gif)
 
-### - How to handle everything with a single thread
+---
+
+How to handle with a single thread
+==================================
+
 - selectors
     - to deal with a large number of data sources simultaneously
     - notifies when any I/O activity happens
@@ -51,25 +76,46 @@ Agenda
 
 - see the example _(Server)_
 
-### - NIO2 Way
+---
+
+NIO2 Way
+========
+
 - https://docs.oracle.com/javase/tutorial/essential/io/file.html
 - Path and File
 - AsynchronousSocketChannel & AsynchronousServerSocketChannel
 - AsynchronousFileChannel
 - ThreadPool & ExecutorService
-    - control in which thread is executed CompletionHandler callback
+    - control in which thread CompletionHandler callback is executed
 - see the example _(AsynchronousExamples & AsynchronousExamplesJ8)_
 
-### - Higher level implementations
+---
+
+Higher level implementations
+============================
+
 - Undertow http://undertow.io/ _(UndertowExample)_
     - lightweight Webserver
     - small dependency tree
 - Netty http://netty.io/
     - easy to implement your own protocol
 - Async Http Client
+    - Undertow
 
 
-### - Why being limited to a single thread while you can use few of them
+---
+
+Multi-threading and Concurrency
+===============================
+
+Why being limited to a single thread
+
+- IO thread pool
+- Worker thread pool
+
+## meet Byteman
+
+http://alesj.github.io/non-blocking-io-meets-concurrency-and-byteman/
 
 ---
 
@@ -78,14 +124,13 @@ Links
 
 ### References
 
-[http://github.com/matejonnet/get-rid-of-boilerplate-with-j8/](http://github.com/matejonnet/get-rid-of-boilerplate-with-j8/)
-http://www.javaworld.com/article/2073344/core-java/use-select-for-high-speed-networking.html
-http://tutorials.jenkov.com/java-nio/nio-vs-io.html
-http://stackoverflow.com/questions/8086930/non-blocking-socket-writes-in-java-versus-blocking-socket-writes
-http://www.programmingopiethehokie.com/2014/03/asynchronous-non-blocking-io-java-echo.html
-http://examples.javacodegeeks.com/core-java/nio/channels/asynchronoussocketchannel/java-nio-channels-asynchronoussocketchannel-example/
-http://openjdk.java.net/projects/nio/presentations/TS-4222.pdf
-http://docs.oracle.com/javase/7/docs/technotes/guides/io/
+- [use select for high speed networking](http://www.javaworld.com/article/2073344/core-java/use-select-for-high-speed-networking.html)
+- http://tutorials.jenkov.com/java-nio/nio-vs-io.html
+- [asynchronous non blocking io java echo](http://www.programmingopiethehokie.com/2014/03/asynchronous-non-blocking-io-java-echo.html)
+- [java nio channels asynchronoussocketchannel example](http://examples.javacodegeeks.com/core-java/nio/channels/asynchronoussocketchannel/java-nio-channels-asynchronoussocketchannel-example/)
+- http://openjdk.java.net/projects/nio/presentations/TS-4222.pdf
+- http://docs.oracle.com/javase/7/docs/technotes/guides/io/
+- http://github.com/matejonnet/get-rid-of-boilerplate-with-j8/
 
 ### Presentation tool used
 https://github.com/gnab/remark/
