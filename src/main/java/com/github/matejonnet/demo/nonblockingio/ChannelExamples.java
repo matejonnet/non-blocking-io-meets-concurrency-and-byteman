@@ -36,12 +36,11 @@ public class ChannelExamples {
         try (FileInputStream inputStream = new FileInputStream(file.toFile())) {
 
             //blocking
-            //inputStream.read(byteArray);
+            inputStream.read(byteArray);
 
             FileChannel fileChannel = inputStream.getChannel();
-            //loop required and call-back recommended
             fileChannel.read(buffer); //TODO wrong ... it might not be able to fully read
-
+            //loop required and call-back recommended
             readFully(fileChannel, buffer);
 
             //get OS level buffer
@@ -49,18 +48,6 @@ public class ChannelExamples {
 
         } catch (IOException e) {
             e.printStackTrace();
-        }
-    }
-
-    private void readFully(FileChannel fileChannel, ByteBuffer byteBuffer) throws IOException {
-        while (true) {
-            int read = fileChannel.read(byteBuffer);
-            if (read == -1) {
-                return;
-            } else if (read == 0) {
-                //TODO multiplex
-                //no Thread.sleep(5);
-            }
         }
     }
 
@@ -84,6 +71,18 @@ public class ChannelExamples {
 
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void readFully(FileChannel fileChannel, ByteBuffer byteBuffer) throws IOException {
+        while (true) {
+            int read = fileChannel.read(byteBuffer);
+            if (read == -1) {
+                return;
+            } else if (read == 0) {
+                //TODO multiplex
+                //no Thread.sleep(5);
+            }
         }
     }
 

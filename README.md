@@ -1,5 +1,7 @@
-Non blocking OI with Java
-=========================
+Non blocking IO in Java
+=======================
+<br />
+<br />
 <br />
 <br />
 <br />
@@ -28,7 +30,7 @@ Agenda
 
 ### - Higher level implementations
 
-### - Multi-threading and Concurrency meets Byteman
+### - Multi-threading and Concurrency meets Byteman _(Ales)_
 
 ---
 
@@ -50,7 +52,7 @@ Non-blocking IO principles
         - deal with data in large blocks
     - See Javadoc _(ChannelExamples#fileChannel)_
 
-![Stream vs Channel](./images/img1.gif)
+![Stream vs Channel](./images/stream-vs-channel.gif)
 
 ---
 
@@ -60,7 +62,7 @@ Non-blocking IO principles #2
     - allocateDirect or MappedByteBuffer _(ChannelExamples#fileChannel)_
     - fileChannel.transferTo _(ChannelExamples#channelTransferTo)_
 
-![System level buffers](./images/img2.gif)
+![System level buffers](./images/os-level-buffers.gif)
 
 ---
 
@@ -87,6 +89,8 @@ NIO2 Way
 - AsynchronousFileChannel
 - ThreadPool & ExecutorService
     - control in which thread CompletionHandler callback is executed
+        - [Fixed Thread Pool](./images/fixed-thread-pool.png)
+        - [Cached and custom thread pool](./images/cached-and-custom-thread-pool.png)
 - see the example _(AsynchronousExamples & AsynchronousExamplesJ8)_
 
 ---
@@ -100,8 +104,8 @@ Higher level implementations
 - Netty http://netty.io/
     - easy to implement your own protocol
 - Async Http Client
+    - AsyncHttpClient https://github.com/AsyncHttpClient/async-http-client
     - Undertow
-
 
 ---
 
@@ -113,9 +117,6 @@ Why being limited to a single thread
 - IO thread pool
 - Worker thread pool
 
-## meet Byteman
-
-http://alesj.github.io/non-blocking-io-meets-concurrency-and-byteman/
 
 ---
 

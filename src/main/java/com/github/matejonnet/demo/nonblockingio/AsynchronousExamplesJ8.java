@@ -27,18 +27,16 @@ public class AsynchronousExamplesJ8 {
         resumeAccept(listener);
     }
 
+    private void resumeAccept(AsynchronousServerSocketChannel listener) {
+        listener.accept(listener, handlerFrom(
+                (clientChannel, ss) -> onConnect(clientChannel, listener),
+                (e, ss) -> onConnectionError(e, listener)));
+    }
+
     void onConnect(AsynchronousSocketChannel clientChannel, AsynchronousServerSocketChannel serverSocket) {
         System.out.println("New connection opened.");
         resumeReads(clientChannel);
         resumeAccept(serverSocket); // get ready for next connection
-    }
-
-    void onMessage (Integer written, OnReadAttachment attachment) {
-        ByteBuffer receivedBuffer = attachment.byteBuffer;
-        receivedBuffer.flip();
-        System.out.println("New message received.");
-        attachment.clientChannel.write(receivedBuffer); //TODO missing complete handler
-        resumeReads(attachment.clientChannel);
     }
 
     void onConnectionError(Throwable e, AsynchronousServerSocketChannel serverSocket) {
@@ -50,6 +48,23 @@ public class AsynchronousExamplesJ8 {
         }
     };
 
+    private void resumeReads(AsynchronousSocketChannel clientChannel) {
+        ByteBuffer readBuffer = ByteBuffer.allocate(1024);
+        OnReadAttachment onReadAttachment = new OnReadAttachment(readBuffer, clientChannel);
+        clientChannel.read(readBuffer, onReadAttachment, handlerFrom(
+                        (written, attachment) -> onMessage(written, attachment),
+                        (e, attachment) -> onMessageError(e, attachment))
+        );
+    }
+
+    void onMessage (Integer written, OnReadAttachment attachment) {
+        ByteBuffer receivedBuffer = attachment.byteBuffer;
+        receivedBuffer.flip();
+        System.out.println("New message received.");
+        attachment.clientChannel.write(receivedBuffer); //TODO missing complete handler
+        resumeReads(attachment.clientChannel);
+    }
+
     void onMessageError(Throwable e, OnReadAttachment attachment) {
         e.printStackTrace();
         try {
@@ -58,21 +73,6 @@ public class AsynchronousExamplesJ8 {
             e1.printStackTrace();
         }
     };
-
-    private void resumeAccept(AsynchronousServerSocketChannel serverSocket) {
-        serverSocket.accept(serverSocket, handlerFrom(
-                (clientChannel, ss) -> onConnect(clientChannel, serverSocket),
-                (e, ss) -> onConnectionError(e, serverSocket)));
-    }
-
-    private void resumeReads(AsynchronousSocketChannel clientChannel) {
-        ByteBuffer readBuffer = ByteBuffer.allocate(1024);
-        OnReadAttachment onReadAttachment = new OnReadAttachment(readBuffer, clientChannel);
-        clientChannel.read(readBuffer, onReadAttachment, handlerFrom(
-                (written, attachment) -> onMessage(written, attachment),
-                (e, attachment) -> onMessageError(e, attachment))
-        );
-    }
 
     private static <V, A> CompletionHandler<V, A> handlerFrom(
             BiConsumer<V, A> completed,

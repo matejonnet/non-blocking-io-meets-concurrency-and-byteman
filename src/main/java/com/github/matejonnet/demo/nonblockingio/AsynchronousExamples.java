@@ -27,12 +27,16 @@ public class AsynchronousExamples {
         InetSocketAddress hostAddress = new InetSocketAddress("localhost", 8181);
         listener.bind(hostAddress);
 
-        //accept the connection
+        //accept the connection using Future
 //        Future<AsynchronousSocketChannel> acceptResult = serverChannel.accept();
 //        AsynchronousSocketChannel clientChannel = acceptResult.get(); //blocking operation
 //        sendMessage(clientChannel);
 
         resumeAccept(listener);
+    }
+
+    private void resumeAccept(AsynchronousServerSocketChannel listener) {
+        listener.accept(listener, onConnect());
     }
 
     //on new connection
@@ -50,10 +54,6 @@ public class AsynchronousExamples {
                 exc.printStackTrace();
             }
         };
-    }
-
-    private void resumeAccept(AsynchronousServerSocketChannel listener) {
-        listener.accept(listener, onConnect());
     }
 
     private void resumeReads(AsynchronousSocketChannel clientChannel) {

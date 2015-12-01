@@ -77,11 +77,11 @@ public class Server implements Runnable {
                         System.out.println("Got connection from " + socket);
 
                         // Make sure to make it non-blocking, so we can use a selector on it.
-                        SocketChannel sc = socket.getChannel();
-                        sc.configureBlocking(false);
+                        SocketChannel socketChannel = socket.getChannel();
+                        socketChannel.configureBlocking(false);
 
                         // Register it with the selector, for reading
-                        sc.register(selector, SelectionKey.OP_READ);
+                        socketChannel.register(selector, SelectionKey.OP_READ);
 
                     } else if ((key.readyOps() & SelectionKey.OP_READ) == SelectionKey.OP_READ) {
                         SocketChannel socketChannel = null;
